@@ -1,5 +1,7 @@
 import {difficulties, taskData} from "./constants";
 
+
+//TODO: add treatment.stageDuration when creating stuff
 export const init = (treatment, players) => {
   const playerIds = _.pluck(players, "_id");
   players.forEach((player, i) => {
@@ -23,7 +25,7 @@ export const init = (treatment, players) => {
       {
         name: "response",
         displayName: "Response",
-        durationInSeconds: 120
+        durationInSeconds: treatment.stageDuration
       }
     ];
 
@@ -31,7 +33,7 @@ export const init = (treatment, players) => {
       stages.push({
         name: "interactive",
         displayName: "Interactive Response",
-        durationInSeconds: 120
+        durationInSeconds: treatment.stageDuration
       });
     }
 
@@ -46,7 +48,7 @@ export const init = (treatment, players) => {
       stages.push({
         name: "outcome",
         displayName: "Round Outcome",
-        durationInSeconds: 120
+        durationInSeconds: treatment.stageDuration
       });
     }
 

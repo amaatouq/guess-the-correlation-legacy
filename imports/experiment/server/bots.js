@@ -51,21 +51,20 @@ export const bob = {
       //bot.set("alterIds", _.pluck(players, "_id").slice(0, game.treatment.altersCount));
 
       //following the top!
-      if (game.treatment.altersCount >0) {
+      if (game.treatment.altersCount > 0) {
         const playerIds = _.pluck(allPlayers, "_id");
-        bot.set(
-          "alterIds",
-          _.without(playerIds, bot.get("_id")).slice(
-            0,
-            game.treatment.altersCount + 1
-          )
+        const newAlters = _.without(playerIds, bot.get("_id")).slice(
+          0,
+          game.treatment.altersCount
         );
+        console.log("now i'll be following", newAlters);
+        bot.set("alterIds", newAlters);
       }
-      
+
       bot.stage.submit();
     }
 
-    if (secondsRemaining <= 100) {
+    if (secondsRemaining <= 3) {
       bot.stage.submit();
     }
   }
