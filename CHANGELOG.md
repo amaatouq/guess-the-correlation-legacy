@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Indexes on all fields used in queries.
+- Treatment conditions and exit steps data added to export.
+- `onGameEnd(game, players)` is added in the `callback` and will run before the Exit Survey.
 
 ### Changed
 
@@ -62,6 +64,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Reset DB settings were not honored in a "production" deployment.
 - Exit Steps now work in production build. See new Exit Step requirements in
   Changed section above.
+- Example ExitSurvey component input fields no longer trim white spaces
+  continuously, which was blocking the input of multiple words.
+- `.set("key", undefined)` no longer explodes, now saves `undefined` as `null`,
+  which is a suppoted value.
+- Better automatic clearing of playerId on DB clearing. Now actually only
+  happens if the DB is cleared.
+- CSV Export is not longer mixing up fields.
 
 <!-- Add unreleased changes here -->
 

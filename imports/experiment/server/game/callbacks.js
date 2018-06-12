@@ -45,6 +45,8 @@ export const onRoundEnd = (game, round, players) => {
   shockTime ? shock(players) : null;
 };
 
+export const onGameEnd = (game, players) => {};
+
 
 // These are just some helper functions for the Guess the Correlation Game
 // compute score.

@@ -1,11 +1,14 @@
 import moment from "moment";
 
+import { Conditions } from "../../api/conditions/conditions.js";
 import { Games } from "../../api/games/games.js";
+import { PlayerInputs } from "../../api/player-inputs/player-inputs.js";
 import { PlayerRounds } from "../../api/player-rounds/player-rounds.js";
 import { PlayerStages } from "../../api/player-stages/player-stages.js";
 import { Players } from "../../api/players/players.js";
 import { Rounds } from "../../api/rounds/rounds.js";
 import { Stages } from "../../api/stages/stages.js";
+import { Treatments } from "../../api/treatments/treatments.js";
 
 //
 // WARNING!!!
@@ -101,11 +104,20 @@ const exportStages = format => (req, res, next) => {
       break;
   }
 
+  const condRaw = Conditions.rawCollection();
+  const condDistinct = Meteor.wrapAsync(condRaw.distinct, condRaw);
+  const conditionTypes = condDistinct("type");
+  const allConditions = Conditions.find().fetch();
+  const getCond = id => allConditions.find(c => c._id === id);
   const playerKeys = getDataKeys(Players);
   const playerRoundKeys = getDataKeys(PlayerRounds);
   const playerStageKeys = getDataKeys(PlayerStages);
   const roundKeys = getDataKeys(Rounds);
   const stageKeys = getDataKeys(Stages);
+
+  for (const type of conditionTypes) {
+    csvHeaders.push(`treatment.${type}`);
+  }
 
   for (const key of roundKeys) {
     csvHeaders.push(`round.data.${key}`);
@@ -127,6 +139,21 @@ const exportStages = format => (req, res, next) => {
     csvHeaders.push(`playerStage.data.${key}`);
   }
 
+  let inputsLen = 0;
+  const inputsPerPlayer = {};
+  PlayerInputs.find().forEach(input => {
+    if (!inputsPerPlayer[input.playerId]) {
+      inputsPerPlayer[input.playerId] = 0;
+    }
+    inputsPerPlayer[input.playerId] += 1;
+    if (inputsPerPlayer[input.playerId] > inputsLen) {
+      inputsLen = inputsPerPlayer[input.playerId];
+    }
+  });
+  _.times(inputsLen, i => {
+    csvHeaders.push(`data.${i}`);
+  });
+
   if (format === "csv") {
     res.write(encodeCells(csvHeaders));
   }
@@ -147,6 +174,10 @@ const exportStages = format => (req, res, next) => {
     const round = Rounds.findOne(playerStage.roundId);
     const stage = Stages.findOne(playerStage.stageId);
     const game = Games.findOne(playerStage.gameId);
+    const treatment = Treatments.findOne(game.treatmentId);
+    const inputs = PlayerInputs.find({
+      playerId: playerStage.playerId
+    }).fetch();
 
     out.set("batchId", playerStage.batchId);
     out.set("gameId", playerStage.gameId);
@@ -155,11 +186,16 @@ const exportStages = format => (req, res, next) => {
     out.set("stageId", playerStage.stageId);
     out.set("playerRoundId", playerRound._id);
     out.set("playerStageId", playerStage._id);
-
     out.set(`round.index`, round.index);
     out.set(`stage.index`, stage.index);
     out.set(`stage.name`, stage.name);
-    out.set(`stage.duration`, stage.duration);
+    out.set(`stage.duration`, stage.durationInSeconds);
+
+    const conditions = treatment.conditionIds.map(getCond);
+    for (const type of conditionTypes) {
+      const cond = conditions.find(c => c.type === type);
+      out.set(`treatment.${type}`, cond && cond.value);
+    }
 
     for (const key of roundKeys) {
       out.set(`round.data.${key}`, round.data[key]);
@@ -180,6 +216,10 @@ const exportStages = format => (req, res, next) => {
     for (const key of playerStageKeys) {
       out.set(`playerStage.data.${key}`, playerStage.data[key]);
     }
+
+    _.times(inputsLen, i => {
+      out.set(`data.${i}`, inputs[i] && inputs[i].data);
+    });
 
     switch (format) {
       case "csv":
