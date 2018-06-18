@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+and this project adheres to
+[Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
@@ -11,7 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Indexes on all fields used in queries.
 - Treatment conditions and exit steps data added to export.
-- `onGameEnd(game, players)` is added in the `callback` and will run before the Exit Survey.
+- `onGameEnd(game, players)` is added in the `callback` and will run before the
+  Exit Survey.
+- CSV Export includes the extracted Player's ID from the URL parameter (i.e., `playerIdParam` settings).
+- New onGameStart, onStageStart callbacks.
 
 ### Changed
 
@@ -58,6 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   than a few seconds but it can seem long when staring at the screen, so we
   added this new screen, which doubles as an indicator for the player to get
   ready for the game.
+- Upgraded Meteor to 1.7.0.3.
+- Upgraded NPM packages: React, React Router, Simple Schema...
 
 ### Fixed
 
@@ -71,6 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Better automatic clearing of playerId on DB clearing. Now actually only
   happens if the DB is cleared.
 - CSV Export is not longer mixing up fields.
+- Loading issue between stages and at beginning of game.
 
 <!-- Add unreleased changes here -->
 

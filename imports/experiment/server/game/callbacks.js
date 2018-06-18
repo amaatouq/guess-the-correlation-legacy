@@ -1,3 +1,5 @@
+export const onGameStart = (game, players) => {};
+
 export const onRoundStart = (game, round, players) => {
   //TODO: temporary fix for storing network evolution
   // The network should be at the player.round level
@@ -8,6 +10,8 @@ export const onRoundStart = (game, round, players) => {
     player.round.set("alterIds", player.get("alterIds"));
   });
 };
+
+export const onStageStart = (game, round, stage, players) => {};
 
 export const onStageEnd = (game, round, stage, players) => {
   if (stage.name === "response") {
