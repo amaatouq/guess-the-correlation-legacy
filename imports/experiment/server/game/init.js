@@ -1,7 +1,6 @@
 import {difficulties, taskData} from "./constants";
 
 
-//TODO: add treatment.stageDuration when creating stuff
 export const init = (treatment, players) => {
   const playerIds = _.pluck(players, "_id");
   players.forEach((player, i) => {
@@ -14,6 +13,7 @@ export const init = (treatment, players) => {
     player.set("difficulty", difficulties[i % difficulties.length]);
     player.set("alterIds", alterIds);
     player.set("cumulativeScore", 0);
+    player.set("bonus", 0);
   });
 
   //only randomize the task if specified in the conditions

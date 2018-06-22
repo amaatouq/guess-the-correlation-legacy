@@ -49,7 +49,19 @@ export const onRoundEnd = (game, round, players) => {
   shockTime ? shock(players) : null;
 };
 
-export const onGameEnd = (game, players) => {};
+export const onGameEnd = (game, players) => {
+  console.log("The game", game._id, "has ended");
+  //const nStages = game.treatment.nBlocks * game.players.length + 1;
+  const conversionRate = 1 / 5;
+  
+  players.forEach(player => {
+    const bonus =
+      player.get("cumulativeScore") > 0
+        ? Math.round(player.get("cumulativeScore") * conversionRate)
+        : 0;
+    player.set("bonus", bonus);
+  });
+};
 
 
 // These are just some helper functions for the Guess the Correlation Game
