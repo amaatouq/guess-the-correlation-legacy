@@ -40,10 +40,8 @@ export const endOfStage = stageId => {
 
   const nextStage = Stages.findOne({ gameId, index: index + 1 });
 
-  if (!nextStage || stage.roundId !== nextStage.roundId) {
-    if (onRoundEnd) {
-      onRoundEnd(game, round, players);
-    }
+  if ((onRoundEnd && !nextStage) || stage.roundId !== nextStage.roundId) {
+    onRoundEnd(game, round, players);
   }
 
   if (nextStage && (onRoundStart || onStageStart)) {
@@ -81,9 +79,6 @@ export const endOfStage = stageId => {
     if (onGameEnd) {
       onGameEnd(game, players);
     }
-    Games.update(gameId, {
-      $set: { finishedAt: new Date() }
-    });
     Players.update(
       { _id: { $in: _.pluck(players, "_id"), $exists: { exitStatus: false } } },
       {
@@ -91,5 +86,8 @@ export const endOfStage = stageId => {
       },
       { multi: true }
     );
+    Games.update(gameId, {
+      $set: { finishedAt: new Date() }
+    });
   }
 };

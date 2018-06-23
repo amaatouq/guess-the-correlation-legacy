@@ -59,11 +59,6 @@ export const conditions = {
     max: 1,
     optional: false
   },
-  randomizeTask: {
-    description: "Whether to randomize the sequence of the task or not",
-    type: Boolean,
-    optional: false
-  },
 
   nRounds: {
     description: "This is the number of rounds for the game",

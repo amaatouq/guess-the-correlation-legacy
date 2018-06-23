@@ -26,56 +26,37 @@ export const onStageEnd = (game, round, stage, players) => {
   }
 };
 
-export const onRoundEnd = (game, round, players) => {
-  //update the cumulative Score for everyone after the round
+
+
+onRoundEnd = (game, round, players) => {
   players.forEach(player => {
     const currentScore = player.get("cumulativeScore");
     const roundScore = player.round.get("score");
     player.set("cumulativeScore", Math.round(currentScore + roundScore));
   });
-
-  //checking whether the game contains shock and whether it is time for it!
-  //currentRoundNumber % nRounds/shockRate * nRounds => whether it is time!
-  const shockTime =
-    game.treatment.shockRate > 0 &&
-    (round.index + 1) %
-      Math.round(
-        game.treatment.nRounds /
-          (game.treatment.shockRate * game.treatment.nRounds)
-      ) ===
-      0;
-  //if it is time for a shock to arrive, then shock the players
-  // i.e., change the difficulty of the task for them.
-  shockTime ? shock(players) : null;
 };
 
-export const onGameEnd = (game, players) => {
+onGameEnd = (game, players) => {
   console.log("The game", game._id, "has ended");
-  //const nStages = game.treatment.nBlocks * game.players.length + 1;
   const conversionRate = 1 / 5;
-  
   players.forEach(player => {
-    const bonus =
-      player.get("cumulativeScore") > 0
-        ? Math.round(player.get("cumulativeScore") * conversionRate)
-        : 0;
+    const bonus = Math.round(player.get("cumulativeScore") * conversionRate);
     player.set("bonus", bonus);
   });
 };
-
 
 // These are just some helper functions for the Guess the Correlation Game
 // compute score.
 function computeScore(players, round) {
   const correctAnswer = round.get("task").correctAnswer;
-  
+
   players.forEach(player => {
     const guess = player.round.get("guess");
     // If no guess given, score is 0
     const score = !guess
       ? 0
       : Math.round((1 - Math.abs(correctAnswer - guess)) * 100);
-    
+
     player.round.set("score", score);
   });
 }
@@ -87,7 +68,7 @@ function colorScores(players) {
   const sortedPlayers = players.sort(compareScores);
   const top3rd = Math.floor(players.length / 3);
   const bottom3rd = Math.floor(players.length - players.length / 3);
-  
+
   sortedPlayers.forEach((player, i) => {
     if (i < top3rd) {
       player.round.set("scoreColor", "green");
@@ -103,7 +84,7 @@ function colorScores(players) {
 function compareScores(firstPlayer, secondPlayer) {
   const scoreA = firstPlayer.round.get("score");
   const scoreB = secondPlayer.round.get("score");
-  
+
   let comparison = 0;
   if (scoreA > scoreB) {
     comparison = -1;
