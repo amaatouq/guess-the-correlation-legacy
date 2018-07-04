@@ -7,6 +7,11 @@ import { IdSchema } from "../default-schemas.js";
 import { LobbyConfigs } from "../lobby-configs/lobby-configs.js";
 import { Players } from "./players";
 
+let callOnChange;
+if (Meteor.isServer) {
+  callOnChange = require("../server/onchange").callOnChange;
+}
+
 export const createPlayer = new ValidatedMethod({
   name: "Players.methods.create",
 
@@ -218,10 +223,18 @@ export const updatePlayerData = new ValidatedMethod({
     },
     value: {
       type: String
+    },
+    append: {
+      type: Boolean,
+      optional: true
+    },
+    noCallback: {
+      type: Boolean,
+      optional: true
     }
   }).validator(),
 
-  run({ playerId, key, value }) {
+  run({ playerId, key, value, append, noCallback }) {
     const player = Players.findOne(playerId);
     if (!player) {
       throw new Error("player not found");
@@ -229,11 +242,21 @@ export const updatePlayerData = new ValidatedMethod({
     // TODO check can update this record player
 
     const val = JSON.parse(value);
-    const $set = {
-      [`data.${key}`]: val
-    };
+    let update = { [`data.${key}`]: val };
+    const modifier = append ? { $push: update } : { $set: update };
 
-    Players.update(playerId, { $set }, { autoConvert: false });
+    Players.update(playerId, modifier, { autoConvert: false });
+
+    if (Meteor.isServer && !noCallback) {
+      callOnChange({
+        playerId,
+        player,
+        key,
+        value: val,
+        prevValue: player.data && player.data[key],
+        append
+      });
+    }
   }
 });
 

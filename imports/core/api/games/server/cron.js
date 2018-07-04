@@ -7,7 +7,7 @@ import { Stages } from "../../stages/stages.js";
 import { Treatments } from "../../treatments/treatments.js";
 import {
   augmentPlayerStageRound,
-  augmentStageRound
+  augmentGameStageRound
 } from "../../player-stages/augment.js";
 import { config } from "../../../../experiment/server";
 import { endOfStage } from "../../stages/finish.js";
@@ -19,7 +19,8 @@ Cron.add({
   task: function(log) {
     const query = {
       status: "running",
-      estFinishedTime: { $gte: new Date() }
+      estFinishedTime: { $gte: new Date() },
+      finishedAt: { $exists: false }
     };
     Games.find(query).forEach(game => {
       const stage = Stages.findOne(game.currentStageId);
@@ -61,7 +62,7 @@ Cron.add({
             return;
           }
 
-          augmentStageRound(stage, round);
+          augmentGameStageRound(game, stage, round);
           players.forEach(player => {
             player.stage = _.extend({}, stage);
             player.round = _.extend({}, round);
