@@ -28,13 +28,13 @@ export default class PlayerProfile extends React.Component {
   }
   
   render() {
-    const { stage, feedbackTime } = this.props;
+    const { stage, round } = this.props;
     
     return (
       <aside className="pt-card player-profile">
         {this.renderProfile()}
         {/*only show score if feedback is enabled this round*/}
-        {feedbackTime? this.renderScore() : null}
+        {round.get("displayFeedback")? this.renderScore() : null}
         <Timer stage={stage} />
       </aside>
     );

@@ -44,9 +44,11 @@ export default class SocialInteraction extends React.Component {
   }
 
   renderAlter(otherPlayer) {
-    const { feedbackTime, game } = this.props;
+    const { round, game } = this.props;
     const cumulativeScore = otherPlayer.get("cumulativeScore") || 0;
     const roundScore = otherPlayer.round.get("score") || 0;
+    
+    const feedbackTime = round.get("displayFeedback");
 
     return (
       <div className="alter pt-card pt-elevation-2" key={otherPlayer._id}>
@@ -103,10 +105,10 @@ export default class SocialInteraction extends React.Component {
   }
 
   renderNonAlter(otherPlayer) {
-    const { feedbackTime, player } = this.props;
+    const { player, round } = this.props;
     const cumulativeScore = otherPlayer.get("cumulativeScore") || 0;
     const roundScore = otherPlayer.round.get("score") || 0;
-
+    const feedbackTime = round.get("displayFeedback");
     return (
       <div className="non-alter" key={otherPlayer._id}>
         <button

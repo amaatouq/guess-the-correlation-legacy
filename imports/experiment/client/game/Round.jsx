@@ -12,13 +12,28 @@ export default class Round extends React.Component {
     return (
       <div className="round">
         <div className="content">
-          <PlayerProfile player={player} stage={stage} game={game}/>
-          <Task round={round} stage={stage} player={player} game={game}/>
+          <PlayerProfile
+            player={player}
+            round={round}
+            stage={stage}
+            game={game}
+          />
+          <Task player={player} round={round} stage={stage} game={game} />
           {social && stage.name === "interactive" ? (
-            <SocialExposure stage={stage} player={player} game={game}/>
+            <SocialExposure
+              player={player}
+              round={round}
+              stage={stage}
+              game={game}
+            />
           ) : null}
           {social && stage.name === "outcome" ? (
-            <SocialInteraction stage={stage} player={player} game={game}/>
+            <SocialInteraction
+              player={player}
+              round={round}
+              stage={stage}
+              game={game}
+            />
           ) : null}
         </div>
       </div>

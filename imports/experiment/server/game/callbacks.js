@@ -5,6 +5,16 @@ export default {
     players.forEach(player => {
       player.round.set("alterIds", player.get("alterIds"));
     });
+  
+    const feedbackTime =
+      game.treatment.feedbackRate > 0 &&
+      (round.index + 1) %
+      Math.round(
+        game.treatment.nRounds /
+        (game.treatment.feedbackRate * game.treatment.nRounds)
+      ) ===
+      0;
+    round.set("displayFeedback",feedbackTime);
   },
   
   onStageStart(game, round, stage, players) {},
