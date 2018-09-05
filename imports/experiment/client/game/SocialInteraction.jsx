@@ -2,7 +2,7 @@ import React from "react";
 
 //TODO: when I remove the pt-icon-dollar sign when giving no feedback, the images are not centered
 
-import { AlertToaster } from "../../../core/ui/components/AlertToaster.jsx";
+import { AlertToaster } from "../../../core/ui/components/Toasters.jsx";
 
 export default class SocialInteraction extends React.Component {
   handleUnfollow = (alterId, event) => {
