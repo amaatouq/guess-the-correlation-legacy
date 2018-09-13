@@ -20,6 +20,8 @@ and this project adheres to
 - New `append()` method on players, playerRounds, playerStages, games, stages and rounds.
 - Added `set()` to games, rounds and stages, and `get()` to games.
 - Added `onSet()`, `onAppend()` and `onChange()` callbacks.
+- Added `get()` are `set()` now available on `player` introduction steps. #71
+- Retiring players who did not play to allow them to play again. #70
 
 ### Changed
 
@@ -66,12 +68,12 @@ and this project adheres to
   than a few seconds but it can seem long when staring at the screen, so we
   added this new screen, which doubles as an indicator for the player to get
   ready for the game.
-- Upgraded Meteor to 1.7.0.3.
 - Upgraded NPM packages: React, React Router, Simple Schema...
 - We now overbook games proportionally to the playerCount.
 - When games start with overbooked players, we try to reassign players to other
   games with the same treatment.
 - Improved export performance.
+- Upgraded Meteor to 1.7.0.5.
 
 ### Fixed
 
